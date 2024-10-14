@@ -1,22 +1,15 @@
 {% extends "layout.html" %}
-
-{% block title %}Wishlist{% endblock %}
-
+{% block title %}My Wishlist{% endblock %}
 {% block content %}
-<h1 class="my-4">My Wishlist</h1>
-<div class="row">
+<h1>My Wishlist</h1>
+<div class="wishlist">
     {% for product in products %}
-    <div class="col-lg-4 col-md-6 mb-4">
-        <div class="card h-100">
-            <img class="card-img-top" src="{{ product.image_url }}" alt="">
-            <div class="card-body">
-                <h4 class="card-title">{{ product.name }}</h4>
-                <h5>${{ product.price }}</h5>
-                <p class="card-text">{{ product.description }}</p>
-                <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
-            </div>
-        </div>
+    <div class="product">
+        <h4>{{ product.name }}</h4>
+        <p>{{ product.description }}</p>
+        <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
     </div>
     {% endfor %}
 </div>
+<a href="{{ url_for('share_wishlist') }}" class="btn btn-secondary">Share Wishlist</a>
 {% endblock %}
