@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product List</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> <!-- Bootstrap Icons -->
 </head>
 <body>
     <!-- Navbar -->
@@ -31,51 +32,118 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Notifications</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" href="#">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Logout</a>
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="container">
-        <h1 class="my-4">Products</h1>
-        <div class="row">
-            {% for product in products %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <img class="card-img-top" src="{{ product.image_url }}" alt="">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ product.name }}</h4>
-                        <h5>${{ product.price }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                        <p class="card-text">{{ 'In Stock' if product.is_available else 'Out of Stock' }}</p>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#productModal{{ product.id }}">View Details</button> <!-- Button to trigger modal -->
+    <!-- Sidebar -->
+    <div class="d-flex">
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">Categories</div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action bg-light">Electronics</a>
+                <a href="#" class="list-group-item list-group-item-action bg-light">Clothing</a>
+                <a href="#" class="list-group-item list-group-item-action bg-light">Home & Garden</a>
+                <a href="#" class="list-group-item list-group-item-action bg-light">Books</a>
+                <a href="#" class="list-group-item list-group-item-action bg-light">Sports</a>
+            </div>
+        </div>
+
+        <!-- Main Container -->
+        <div class="container-fluid">
+            <h1 class="my-4">Products</h1>
+
+            <!-- Carousel -->
+            <div id="featuredCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="featured1.jpg" class="d-block w-100" alt="Featured Product 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="featured2.jpg" class="d-block w-100" alt="Featured Product 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="featured3.jpg" class="d-block w-100" alt="Featured Product 3">
                     </div>
                 </div>
+                <a class="carousel-control-prev" href="#featuredCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#featuredCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="productModalLabel{{ product.id }}" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="productModalLabel{{ product.id }}">{{ product.name }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+            <!-- Product List -->
+            <div class="row mt-4">
+                {% for product in products %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="{{ product.image_url }}" alt="">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ product.name }}</h4>
+                            <h5>${{ product.price }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <p class="card-text">{{ 'In Stock' if product.is_available else 'Out of Stock' }}</p>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#productModal{{ product.id }}">
+                                <i class="fas fa-info-circle"></i> View Details
                             </button>
-                        </div>
-                        <div class="modal-body">
-                            <img class="img-fluid" src="{{ product.image_url }}" alt="">
-                            <p>{{ product.description }}</p>
-                            <p>Price: ${{ product.price }}</p>
-                            <p>{{ 'In Stock' if product.is_available else 'Out of Stock' }}</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="productModalLabel{{ product.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="productModalLabel{{ product.id }}">{{ product.name }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img class="img-fluid" src="{{ product.image_url }}" alt="">
+                                <p>{{ product.description }}</p>
+                                <p>Price: ${{ product.price }}</p>
+                                <p>{{ 'In Stock' if product.is_available else 'Out of Stock' }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 
