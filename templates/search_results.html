@@ -1,28 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <h1 class="my-4">Search Results</h1>
-        <div class="row">
-            {% for product in results %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <img class="card-img-top" src="{{ product.image_url }}" alt="">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ product.name }}</h4>
-                        <h5>${{ product.price }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                    </div>
+{% extends "layout.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Search Results</h1>
+
+    <!-- Advanced Search Form -->
+    <form action="{{ url_for('advanced_search') }}" method="GET" class="mb-4">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" name="brand" class="form-control" placeholder="Brand">
+            </div>
+            <div class="col">
+                <input type="number" name="rating" class="form-control" placeholder="Minimum Rating" min="1" max="5">
+            </div>
+            <div class="col">
+                <input type="text" name="discount" class="form-control" placeholder="Discount Availability">
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        {% for product in results %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="{{ product.image_url }}" alt="">
+                <div class="card-body">
+                    <h4 class="card-title">{{ product.name }}</h4>
+                    <h5>${{ product.price }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <p class="card-text">Rating: {{ product.rating }}</p>
+                    <p class="card-text">Brand: {{ product.brand }}</p>
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
