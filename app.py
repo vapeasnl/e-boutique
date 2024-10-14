@@ -28,5 +28,21 @@ def add_product():
         return redirect(url_for('admin_products'))
     return render_template('add_product.html')
 
+@app.route('/admin/products/delete/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    product = Product.query.get(product_id)
+    if product:
+        db.session.delete(product)
+        db.session.commit()
+    return redirect(url_for('admin_products'))
+
+@app.route('/client')
+def client():
+    # Fetch the logged-in user's orders
+    user_id = 1  # This should be dynamically fetched from session or authentication method
+    orders = Order.query.filter_by(user_id=user_id).all()
+    return render_template('client.html', orders=orders)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
