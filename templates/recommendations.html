@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Recommendations{% endblock %}
+{% block content %}
+<h1>Recommended Products for {{ product.name }}</h1>
+<div class="recommendations">
+    {% for recommended_product in recommended_products %}
+    <div class="recommended-product">
+        <h4>{{ recommended_product.name }}</h4>
+        <p>{{ recommended_product.description }}</p>
+        <p>Price: ${{ recommended_product.price }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
