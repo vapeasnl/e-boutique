@@ -24,6 +24,40 @@ def admin_dashboard():
         'top_products': ['Product A', 'Product B', 'Product C']
     }
     return render_template('admin_dashboard.html', sales_data=sales_data)
+
+@app.route('/filter')
+def filter_products():
+    name = request.args.get('name')
+    min_price = request.args.get('min_price')
+    max_price = request.args.get('max_price')
+    availability = request.args.get('availability')
+
+    query = Product.query
+    if name:
+        query = query.filter(Product.name.contains(name))
+    if min_price:
+        query = query.filter(Product.price >= float(min_price))
+    if max_price:
+        query = query.filter(Product.price <= float(max_price))
+    if availability:
+        query = query.filter(Product.is_available == (availability == 'true'))
+
+    products = query.all()
+    return render_template('filter_results.html', products=products)
+
+@app.route('/categories')
+def categories():
+    categories = Category.query.all()
+    return render_template('categories.html', categories=categories)
+
+@app.route('/category/<int:category_id>')
+def category_products(category_id):
+    category = Category.query.get(category_id)
+    products = Product.query.filter_by(category_id=category_id).all()
+    return render_template('category_products.html', category=category, products=products)
+
+
+
 @app.route('/product/<int:product_id>/reviews', methods=['GET', 'POST'])
 def product_reviews(product_id):
     product = Product.query.get(product_id)
