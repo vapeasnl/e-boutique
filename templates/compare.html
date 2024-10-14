@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Product Comparison{% endblock %}
+{% block content %}
+<h1>Compare Products</h1>
+<div class="container">
+    {% for product in products %}
+    <div class="product">
+        <h4>{{ product.name }}</h4>
+        <p>Description: {{ product.description }}</p>
+        <p>Price: ${{ product.price }}</p>
+        <p>Rating: {{ product.rating }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
