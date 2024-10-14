@@ -1,9 +1,71 @@
-from flask import Flask, render_template, request, redirect, url_for
-from models import db, Product
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from models import db, Product, User
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///e-boutique.db'
+app.secret_key = 'your_secret_key'
 db.init_app(app)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            return redirect(url_for('home'))
+        else:
+            flash('Login failed. Check your username and/or password.')
+    return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'], method='sha256')
+        new_user = User(username=username, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/wishlist')
+def wishlist():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+    wishlist_items = Wishlist.query.filter_by(user_id=user_id).all()
+    products = [Product.query.get(item.product_id) for item in wishlist_items]
+    return render_template('wishlist.html', products=products)
+
+@app.route('/add_to_wishlist/<int:product_id>')
+def add_to_wishlist(product_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+    new_wishlist_item = Wishlist(user_id=user_id, product_id=product_id)
+    db.session.add(new_wishlist_item)
+    db.session.commit()
+    return redirect(url_for('wishlist'))
+
+@app.route('/notifications')
+def notifications():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+    notifications = Notification.query.filter_by(user_id=user_id).all()
+    return render_template('notifications.html', notifications=notifications)
+
+def send_notification(user_id, message):
+    new_notification = Notification(user_id=user_id, message=message)
+    db.session.add(new_notification)
+    db.session.commit()
+
+# Example usage
+# send_notification(user_id, "Your order status has changed.")
 
 @app.route('/')
 def home():
