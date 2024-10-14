@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Product Variations{% endblock %}
+{% block content %}
+<h1>{{ product.name }} Variations</h1>
+<div class="container">
+    {% for variation in variations %}
+    <div class="variation">
+        <h4>{{ variation.variation_type }}: {{ variation.variation_value }}</h4>
+        <p>Additional Price: ${{ variation.additional_price }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
