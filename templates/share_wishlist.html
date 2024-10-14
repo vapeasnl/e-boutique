@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Share Wishlist{% endblock %}
+{% block content %}
+<h1>Share Wishlist</h1>
+<div class="wishlist">
+    {% for product in products %}
+    <div class="product">
+        <h4>{{ product.name }}</h4>
+        <p>{{ product.description }}</p>
+        <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
+    </div>
+    {% endfor %}
+</div>
+<button class="btn btn-secondary">Send Wishlist</button>
+{% endblock %}
