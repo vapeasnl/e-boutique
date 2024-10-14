@@ -1,28 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Reviews</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <h1 class="my-4">{{ product.name }} Reviews</h1>
-        <form method="POST">
-            <div class="form-group">
-                <label for="review">Write a Review</label>
-                <textarea class="form-control" id="review" name="review" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        <div class="list-group my-4">
-            {% for review in reviews %}
-                <div class="list-group-item">
-                    <p>{{ review.content }}</p>
-                </div>
-            {% endfor %}
-        </div>
+{% extends "layout.html" %}
+{% block title %}Product Reviews{% endblock %}
+{% block content %}
+<h1>{{ product.name }} Reviews</h1>
+<div class="reviews">
+    {% for review in reviews %}
+    <div class="review">
+        <p>Rating: {{ review.rating }}</p>
+        <p>{{ review.review_text }}</p>
     </div>
-</body>
-</html>
+    {% endfor %}
+</div>
+<form action="{{ url_for('product_reviews', product_id=product.id) }}" method="POST">
+    <input type="number" name="rating" min="1" max="5" placeholder="Rating">
+    <textarea name="review" placeholder="Write your review"></textarea>
+    <button type="submit">Submit Review</button>
+</form>
+{% endblock %}
