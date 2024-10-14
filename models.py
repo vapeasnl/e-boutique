@@ -19,6 +19,26 @@ class Wishlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    shared = db.Column(db.Boolean, default=False)
+
+class ProductVariation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    variation_type = db.Column(db.String(50), nullable=False)
+    variation_value = db.Column(db.String(50), nullable=False)
+    additional_price = db.Column(db.Float, nullable=True)
+
+class Recommendation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    recommended_product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    review_text = db.Column(db.String(500), nullable=True)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
