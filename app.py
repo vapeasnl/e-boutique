@@ -15,6 +15,36 @@ def admin_products():
     products = Product.query.all()
     return render_template('admin_products.html', products=products)
 
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    # Sample data for demonstration
+    sales_data = {
+        'total_sales': 5000,
+        'total_orders': 150,
+        'top_products': ['Product A', 'Product B', 'Product C']
+    }
+    return render_template('admin_dashboard.html', sales_data=sales_data)
+@app.route('/product/<int:product_id>/reviews', methods=['GET', 'POST'])
+def product_reviews(product_id):
+    product = Product.query.get(product_id)
+    if request.method == 'POST':
+        review = request.form['review']
+        # Save review to the database
+    reviews = []  # Fetch reviews from the database
+    return render_template('product_reviews.html', product=product, reviews=reviews)
+
+@app.route('/search')
+def search():
+    query = request.args.get('q')
+    results = Product.query.filter(Product.name.contains(query)).all()
+    return render_template('search_results.html', results=results)
+
+@app.route('/client/orders')
+def client_orders():
+    user_id = 1  # Replace with actual user ID from session
+    orders = Order.query.filter_by(user_id=user_id).all()
+    return render_template('client_orders.html', orders=orders)
+
 @app.route('/admin/products/add', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
