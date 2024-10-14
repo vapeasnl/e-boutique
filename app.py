@@ -32,6 +32,72 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
+@app.route('/product/<int:product_id>/variations')
+def product_variations(product_id):
+    product = Product.query.get(product_id)
+    variations = ProductVariation.query.filter_by(product_id=product_id).all()
+    return render_template('product_variations.html', product=product, variations=variations)
+
+@app.route('/advanced_search')
+def advanced_search():
+    brand = request.args.get('brand')
+    rating = request.args.get('rating')
+    discount = request.args.get('discount')
+    # ... add more filters
+    query = Product.query
+    if brand:
+        query = query.filter(Product.brand == brand)
+    if rating:
+        query = query.filter(Product.rating >= rating)
+    if discount:
+        query = query.filter(Product.discount >= discount)
+    products = query.all()
+    return render_template('search_results.html', products=products)
+
+@app.route('/compare')
+def compare():
+    product_ids = request.args.getlist('product_ids')
+    products = Product.query.filter(Product.id.in_(product_ids)).all()
+    return render_template('compare.html', products=products)
+
+@app.route('/share_wishlist')
+def share_wishlist():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+    wishlist_items = Wishlist.query.filter_by(user_id=user_id).all()
+    products = [Product.query.get(item.product_id) for item in wishlist_items]
+    # Logic to share wishlist
+    return render_template('share_wishlist.html', products=products)
+
+@app.route('/price_drop_notifications')
+def price_drop_notifications():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+    notifications = Notification.query.filter_by(user_id=user_id).all()
+    return render_template('price_drop_notifications.html', notifications=notifications)
+
+@app.route('/product/<int:product_id>/reviews', methods=['GET', 'POST'])
+def product_reviews(product_id):
+    product = Product.query.get(product_id)
+    if request.method == 'POST':
+        rating = request.form['rating']
+        review_text = request.form['review']
+        new_review = Review(product_id=product_id, user_id=session.get('user_id'), rating=rating, review_text=review_text)
+        db.session.add(new_review)
+        db.session.commit()
+    reviews = Review.query.filter_by(product_id=product_id).all()
+    return render_template('product_reviews.html', product=product, reviews=reviews)
+
+@app.route('/recommendations/<int:product_id>')
+def recommendations(product_id):
+    product = Product.query.get(product_id)
+    recommendations = Recommendation.query.filter_by(product_id=product_id).all()
+    recommended_products = [Product.query.get(rec.recommended_product_id) for rec in recommendations]
+    return render_template('recommendations.html', product=product, recommended_products=recommended_products)
+
+
 @app.route('/wishlist')
 def wishlist():
     user_id = session.get('user_id')
