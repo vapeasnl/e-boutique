@@ -79,17 +79,25 @@ def price_drop_notifications():
     return render_template('price_drop_notifications.html', notifications=notifications)
 
 @app.route('/product/<int:product_id>/reviews', methods=['GET', 'POST'])
+
+@app.route('/product/<int:product_id>/reviews', methods=['GET', 'POST'])
 def product_reviews(product_id):
     product = Product.query.get(product_id)
     if request.method == 'POST':
-        rating = request.form['rating']
-        review_text = request.form['review']
-        new_review = Review(product_id=product_id, user_id=session.get('user_id'), rating=rating, review_text=review_text)
-        db.session.add(new_review)
-        db.session.commit()
+        rating = request.form.get('rating')
+        review_text = request.form.get('review')
+        if rating and review_text:
+            new_review = Review(product_id=product_id, user_id=session.get('user_id'), rating=rating, review_text=review_text)
+            db.session.add(new_review)
+            db.session.commit()
+        else:
+            review = request.form.get('review')
+            if review:
+                # Save review to the database (implement the logic here)
+                pass
     reviews = Review.query.filter_by(product_id=product_id).all()
     return render_template('product_reviews.html', product=product, reviews=reviews)
-    
+
 @app.route('/recommendations/<int:product_id>')
 def recommendations(product_id):
     product = Product.query.get(product_id)
@@ -185,21 +193,6 @@ def category_products(category_id):
     return render_template('category_products.html', category=category, products=products)
 
 
-
-@app.route('/product/<int:product_id>/reviews', methods=['GET', 'POST'])
-def product_reviews(product_id):
-    product = Product.query.get(product_id)
-    if request.method == 'POST':
-        review = request.form['review']
-        # Save review to the database
-    reviews = []  # Fetch reviews from the database
-    return render_template('product_reviews.html', product=product, reviews=reviews)
-
-@app.route('/search')
-def search():
-    query = request.args.get('q')
-    results = Product.query.filter(Product.name.contains(query)).all()
-    return render_template('search_results.html', results=results)
 
 @app.route('/client/orders')
 def client_orders():
