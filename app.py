@@ -89,7 +89,7 @@ def product_reviews(product_id):
         db.session.commit()
     reviews = Review.query.filter_by(product_id=product_id).all()
     return render_template('product_reviews.html', product=product, reviews=reviews)
-
+    
 @app.route('/recommendations/<int:product_id>')
 def recommendations(product_id):
     product = Product.query.get(product_id)
