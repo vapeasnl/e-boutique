@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from models import db, Product, User
+from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///e-boutique.db'
-app.secret_key = 'your_secret_key'
+app.secret_key = 'secrets.token_hex(16)'
 db.init_app(app)
 
 @app.route('/login', methods=['GET', 'POST'])
